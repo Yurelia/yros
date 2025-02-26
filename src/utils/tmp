@@ -1,0 +1,56 @@
+mov eax, ptable_l2_1
+	or  eax, 0b11
+	mov [ptable_l3 + 0], eax
+	mov ecx, 0
+map_ptable_l2_1:
+	mov eax, 0x200000
+	mul ecx
+	or  eax, 0b10000011
+	mov [ptable_l2_1 + ecx * 8], eax
+	inc ecx
+	cmp ecx, 512
+	jne map_ptable_l2_1
+
+	mov eax, ptable_l2_2
+	or  eax, 0b11
+	mov [ptable_l3 + 8], eax
+	mov ecx, 0
+map_ptable_l2_2:
+	mov eax, 0x200000
+	mul ecx
+	or  eax, 0b10000011
+	add eax, 0x40000000
+	mov [ptable_l2_2 + ecx * 8], eax
+	inc ecx
+	cmp ecx, 512
+	jne map_ptable_l2_2
+
+	mov eax, ptable_l2_3
+	or  eax, 0b11
+	mov [ptable_l3 + 16], eax
+	mov ecx, 0
+map_ptable_l2_3:
+	mov eax, 0x200000
+	mul ecx
+	or  eax, 0b10000011
+	add eax, 0x80000000
+	mov [ptable_l2_3 + ecx * 8], eax
+	inc ecx
+	cmp ecx, 512
+	jne map_ptable_l2_3
+
+	mov eax, ptable_l2_4
+	or  eax, 0b11
+	mov [ptable_l3 + 24], eax
+	mov ecx, 0
+map_ptable_l2_4:
+	mov eax, 0x200000
+	mul ecx
+	or  eax, 0b10000011
+	add eax, 0xc0000000
+	mov [ptable_l2_4 + ecx * 8], eax
+	inc ecx
+	cmp ecx, 512
+	jne map_ptable_l2_4
+	;grub-mkrescue -d /usr/lib/grub/x86_64-efi -o $@ $(BOOT)/..
+	;qemu-system-x86_64 -bios $(SRC)/utils/OVMF.4m.fd -m 1G -s -S -cdrom $<
